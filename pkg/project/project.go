@@ -11,16 +11,15 @@ import (
 )
 
 func GetTypes() []models.ProjectType {
-	return []models.ProjectType{
-		{Name: str.ProjectTypeGo.String(), IDE: "goland", Patterns: []string{"go.mod", "go.sum", "go.work", "go.work.sum"}},
-		{Name: str.ProjectTypePython.String(), IDE: "pycharm", Patterns: []string{"requirements.txt", "setup.py", "pyproject.toml", "Pipfile"}},
-		{Name: str.ProjectTypeJavaScript.String(), IDE: "webstorm", Patterns: []string{"package.json", "tsconfig.json"}},
-		{Name: str.ProjectTypeJava.String(), IDE: "idea", Patterns: []string{"pom.xml", "build.gradle", "build.gradle.kts"}},
-		{Name: str.ProjectTypePHP.String(), IDE: "phpstorm", Patterns: []string{"composer.json"}},
-		{Name: str.ProjectTypeRuby.String(), IDE: "rubymine", Patterns: []string{"Gemfile", "Rakefile"}},
-		{Name: str.ProjectTypeRust.String(), IDE: "rustrover", Patterns: []string{"Cargo.toml"}},
-		{Name: str.ProjectTypeCPlusPlus.String(), IDE: "clion", Patterns: []string{"CMakeLists.txt", "Makefile"}},
+	var types []models.ProjectType
+	for _, pattern := range str.ProjectTypePatterns {
+		types = append(types, models.ProjectType{
+			Name:     pattern.Type.String(),
+			IDE:      pattern.IDE.String(),
+			Patterns: pattern.Patterns,
+		})
 	}
+	return types
 }
 
 func GetIconForType(projectType string) string {
@@ -47,13 +46,11 @@ func GetIconForType(projectType string) string {
 }
 
 func DetectType(projectPath string) string {
-	projectTypes := GetTypes()
-
-	for _, pt := range projectTypes {
-		for _, pattern := range pt.Patterns {
-			filePath := filepath.Join(projectPath, pattern)
+	for _, pattern := range str.ProjectTypePatterns {
+		for _, filePattern := range pattern.Patterns {
+			filePath := filepath.Join(projectPath, filePattern)
 			if _, err := os.Stat(filePath); err == nil {
-				return pt.Name
+				return pattern.Type.String()
 			}
 		}
 	}
@@ -95,10 +92,10 @@ func DetectType(projectPath string) string {
 
 		if !info.IsDir() {
 			fileName := info.Name()
-			for _, pt := range projectTypes {
-				for _, pattern := range pt.Patterns {
-					if fileName == pattern && foundType == str.ProjectTypeUnknown.String() {
-						foundType = pt.Name
+			for _, pattern := range str.ProjectTypePatterns {
+				for _, filePattern := range pattern.Patterns {
+					if fileName == filePattern && foundType == str.ProjectTypeUnknown.String() {
+						foundType = pattern.Type.String()
 						return filepath.SkipAll
 					}
 				}
@@ -112,11 +109,9 @@ func DetectType(projectPath string) string {
 }
 
 func GetIDEForType(projectType string) string {
-	projectTypes := GetTypes()
-
-	for _, pt := range projectTypes {
-		if pt.Name == projectType {
-			idePath := editor.FindJetBrainsIDE(pt.IDE)
+	for typeKey, pattern := range str.ProjectTypePatterns {
+		if typeKey.String() == projectType {
+			idePath := editor.FindJetBrainsIDE(pattern.IDE.String())
 			if idePath != "" {
 				return idePath
 			}
