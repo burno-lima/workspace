@@ -1,6 +1,6 @@
-# 🚀 Laucher - Project Launcher TUI
+# 🚀 Workspace - Project Workspace Manager TUI
 
-Um launcher de projetos no estilo lazygit feito em Go com interface TUI (Terminal User Interface).
+Um gerenciador de workspace de projetos no estilo lazygit feito em Go com interface TUI (Terminal User Interface).
 
 ## ✨ Funcionalidades
 
@@ -18,7 +18,7 @@ Um launcher de projetos no estilo lazygit feito em Go com interface TUI (Termina
 ## 📦 Instalação
 
 ```bash
-go build -o laucher
+go build -o workspace ./cmd/workspace
 ```
 
 ## 🎨 Fontes e Glifos
@@ -80,12 +80,12 @@ fc-cache -fv
 ## 🚀 Uso
 
 ```bash
-./laucher <path>
+./workspace <path>
 ```
 
 Exemplo:
 ```bash
-./laucher /home/brunolima/workspace/napp
+./workspace /home/brunolima/workspace/napp
 ```
 
 ## ⌨️ Controles
