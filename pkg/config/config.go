@@ -15,9 +15,9 @@ func GetConfigPath() string {
 	if err != nil {
 		return ""
 	}
-	configDir := filepath.Join(home, ".config", "workspace")
-	os.MkdirAll(configDir, 0755)
-	return filepath.Join(configDir, "workspace.config")
+	configDir := filepath.Join(home, str.ConfigDirName.String(), str.ConfigDirWorkspace.String())
+	os.MkdirAll(configDir, os.FileMode(str.PermissionDirDefault))
+	return filepath.Join(configDir, str.ConfigFileName.String())
 }
 
 func Load() (models.Config, error) {
@@ -38,7 +38,7 @@ func Load() (models.Config, error) {
 		if len(parts) == 2 {
 			key := strings.TrimSpace(parts[0])
 			value := strings.TrimSpace(parts[1])
-			if key == "default" {
+			if key == str.ConfigKeyDefault.String() {
 				config.DefaultEditor = value
 			} else {
 				config.ProjectEditors[key] = value
@@ -62,7 +62,7 @@ func Save(config models.Config) error {
 		lines = append(lines, fmt.Sprintf("%s=%s", project, editor))
 	}
 	data := strings.Join(lines, "\n") + "\n"
-	return os.WriteFile(configPath, []byte(data), 0644)
+	return os.WriteFile(configPath, []byte(data), os.FileMode(str.PermissionFileDefault))
 }
 
 func Reset() error {

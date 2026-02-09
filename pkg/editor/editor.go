@@ -37,9 +37,9 @@ func DetectAvailable() []models.Editor {
 	}
 
 	if len(available) == 0 {
-		if runtime.GOOS == "darwin" {
+		if runtime.GOOS == str.OSDarwin.String() {
 			available = append(available, models.Editor{Name: str.EditorNameDefault.String(), Command: str.EditorCommandOpenMacOS.String(), Display: str.EditorDefaultMacOS.String()})
-		} else if runtime.GOOS == "windows" {
+		} else if runtime.GOOS == str.OSWindows.String() {
 			available = append(available, models.Editor{Name: str.EditorNameDefault.String(), Command: str.EditorCommandStartWindows.String(), Display: str.EditorDefaultWindows.String()})
 		} else {
 			available = append(available, models.Editor{Name: str.EditorNameDefault.String(), Command: str.EditorCommandXdgOpen.String(), Display: str.EditorDefaultSystem.String()})

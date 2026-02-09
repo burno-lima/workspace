@@ -75,18 +75,10 @@ func DetectType(projectPath string) string {
 		}
 
 		if info.IsDir() {
-			skipDirs := map[string]bool{
-				"node_modules": true,
-				"vendor":       true,
-				"venv":         true,
-				".venv":        true,
-				"__pycache__":  true,
-				"build":        true,
-				"dist":         true,
-				"target":       true,
-			}
-			if skipDirs[info.Name()] {
-				return filepath.SkipDir
+			for _, skipDir := range str.SkipDirectories {
+				if info.Name() == skipDir.String() {
+					return filepath.SkipDir
+				}
 			}
 		}
 
